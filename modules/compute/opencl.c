@@ -61,12 +61,12 @@ void dct_init_compute(dct_compute_t *compute) {
   // for the time being, we are manually initializing our buffers.
   compute->buffer_count = 3;
   compute->buffer_capacity = 1024;
-  compute->buffer_item_size = sizeof(float);
+  compute->buffer_item_size = sizeof(int);
   compute->buffer_size = compute->buffer_capacity * compute->buffer_item_size;
-  compute->buffers = malloc(compute->buffer_count * compute->buffer_capacity * sizeof(int *));
+  compute->buffers = malloc(compute->buffer_count * sizeof(int *));
 
   for (int i = 0; i < compute->buffer_count; ++i) {
-	compute->buffers[i] = malloc(compute->buffer_capacity * compute->buffer_item_size);
+	compute->buffers[i] = malloc(compute->buffer_size);
   }
 
   dct_driver_t *driver;
@@ -85,22 +85,23 @@ void dct_free_compute(dct_compute_t compute) {
   free(compute.buffers);
 }
 
-void dct_set_buffer(dct_compute_t compute, void *buffer, size_t index) {
+void dct_set_buffer(dct_compute_t compute, size_t compute_index, size_t driver_index) {
   dct_driver_t *driver = compute.driver;
-  driver->status = clEnqueueWriteBuffer(driver->command_queue, driver->buffers[index], CL_TRUE, 0, compute.buffer_size, buffer, 0, NULL, NULL);
+  void* buffer = compute.buffers[compute_index];
+  driver->status = clEnqueueWriteBuffer(driver->command_queue, driver->buffers[driver_index], CL_TRUE, 0, compute.buffer_size, buffer, 0, NULL, NULL);
 }
 
-void dct_get_buffer(dct_compute_t compute, void *buffer, size_t index) {
+void dct_get_buffer(dct_compute_t compute, size_t compute_index, size_t driver_index) {
   dct_driver_t *driver = compute.driver;
-  clEnqueueReadBuffer(driver->command_queue, driver->buffers[index], CL_TRUE, 0, compute.buffer_size, buffer, 0, NULL, NULL);
+  void* buffer = compute.buffers[compute_index];
+  clEnqueueReadBuffer(driver->command_queue, driver->buffers[driver_index], CL_TRUE, 0, compute.buffer_size, buffer, 0, NULL, NULL);
 }
 
 void dct_set_kernel(dct_compute_t compute, dct_source_t source, const char *name) {
   dct_driver_t *driver = compute.driver;
-  driver->program = clCreateProgramWithSource(driver->context, 1, (const char **)&source, (const size_t *)&source.size, &driver->status);
 
+  driver->program = clCreateProgramWithSource(driver->context, 1, (const char **)&source.file, (const size_t *)&source.size, &driver->status);
   driver->status = clBuildProgram(driver->program, 1, &driver->device_id, NULL, NULL, NULL);
-
   driver->kernel = clCreateKernel(driver->program, name, &driver->status);
 
   for (int i = 0; i < 3; ++i) {
@@ -112,5 +113,5 @@ void dct_execute_kernel(dct_compute_t compute) {
   dct_driver_t *driver = compute.driver;
 
   size_t group_size = 64;
-  driver->status = clEnqueueNDRangeKernel(driver->command_queue, driver->kernel, 1, NULL, &compute.buffer_size, &group_size, 0, NULL, NULL);
+  driver->status = clEnqueueNDRangeKernel(driver->command_queue, driver->kernel, 1, NULL, &compute.buffer_capacity, &group_size, 0, NULL, NULL);
 }
