@@ -31,7 +31,7 @@ static void init_driver(dct_driver_t **driver, size_t size) {
   dct_driver_t *ref = *driver;
 
   ref->status = clGetPlatformIDs(1, &ref->platform_id, &ref->platform_count);
-  ref->status = clGetDeviceIDs(ref->platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &ref->device_id, &ref->device_count);
+  ref->status = clGetDeviceIDs(ref->platform_id, CL_DEVICE_TYPE_GPU, 1, &ref->device_id, &ref->device_count);
 
   ref->context = clCreateContext(NULL, 1, &ref->device_id, NULL, NULL, &ref->status);
   ref->command_queue = clCreateCommandQueue(ref->context, ref->device_id, 0, &ref->status);
@@ -60,7 +60,7 @@ static void free_driver(dct_driver_t *driver) {
 void dct_init_compute(dct_compute_t *compute) {
   // for the time being, we are manually initializing our buffers.
   compute->buffer_count = 3;
-  compute->buffer_capacity = 1024;
+  compute->buffer_capacity = 1920 * 1080;
   compute->buffer_item_size = sizeof(int);
   compute->buffer_size = compute->buffer_capacity * compute->buffer_item_size;
   compute->buffers = malloc(compute->buffer_count * sizeof(int *));

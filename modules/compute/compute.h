@@ -7,6 +7,11 @@
 typedef struct dct_source_t dct_source_t;
 typedef struct dct_compute_t dct_compute_t;
 
+/*
+ * Not in love with the overall API just yet.
+ * Works well enough though.
+ * */
+
 void dct_init_compute(dct_compute_t *compute);
 void dct_free_compute(dct_compute_t compute);
 
