@@ -12,3 +12,5 @@ target_link_libraries(DCT DCT_COMPUTE DCT_IO)
 
 target_compile_options(DCT PRIVATE "-std=c11")
 
+enable_testing()
+add_subdirectory(tests)

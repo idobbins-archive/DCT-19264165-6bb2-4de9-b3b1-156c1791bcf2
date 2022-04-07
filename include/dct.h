@@ -12,6 +12,13 @@ struct dct_source_t {
   void*	file;
 };
 
+struct dct_png_t {
+  size_t width, height;
+  unsigned char color_type;
+  unsigned char bit_depth;
+  void **row_pointers;
+};
+
 struct dct_compute_t {
   dct_source_t kernel_source;
   void*	driver;
