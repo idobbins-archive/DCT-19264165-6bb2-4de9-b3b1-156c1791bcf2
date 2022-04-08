@@ -1,19 +1,27 @@
 # Discrete Cosine Transform Image Compression (DCT)
 
-Given curiosity, I build things and find myself illuminated.
+### Introduction
 
 DCT is a somewhat trivial implementation of a lossy image compression
 strategy that uses the Discrete Cosine Transform and Linear Quantization.
 
-It doesn't do much other than that.
+It was created as a way to explore compression technology. It is not expected to
+be exceptionally fast, or even good at what it is supposed to do. It does not output
+a smaller image, just the reconstructed one. This library would make a horrible tool
+in any production environment, but having immediate access to before and after images
+of a compression strategy is incredibly useful.
 
-The cli parameters are rigid; there is minimal checking.
+### Usage
 
-Invocations should follow the form:
+Invocations must follow the form:
 
 `./dct -c {path to infile} -d {degree} -p {p-value}`
 
-The cli arguments are defined  below, all are reqired:
+> A file called 'out.png' will be generated in the same directory as the executable.
+
+### CLI Arguments
+
+The cli arguments are defined  below:
 
     CLI Arguments:
 
@@ -27,18 +35,32 @@ The cli arguments are defined  below, all are reqired:
 	p-value (-p)
  		Desired p-value used to initialize the quantization matrix.
 
-Basic logging is provided to show the progress of the compression. For now,
-every invocation outputs the reconstructed image as 'out.png' in the same directory
-the executable was called from.
+### Building
 
-DCT was not built with optimization in mind. I am aware of places where memory
-is allocated more often than I would prefer. I also have not done much in the 
-way of cache-friendliness.
+To build DCT, you must have the following installed:
+* CMake
+* libpng
+* OpenCL
 
-The linear algebra operations I have written were all I needed to get this working
-so I didn't feel the need to import a more fully-fledged library for them.
+To clone and build, run the following command:
+
+```
+git clone https://github.com/idobbins/DCT.git
+
+# out of source builds are encouraged
+mkdir build
+cd build
+
+cmake ../DCT
+make
+``` 
+
+
+
+
 
 ---
+### Reference Links
 
 Test image sources:
 * [basis_universal](https://github.com/BinomialLLC/basis_universal)
