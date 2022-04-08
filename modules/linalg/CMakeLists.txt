@@ -8,4 +8,4 @@ target_sources(DCT_LINALG
         PRIVATE
         linalg.c)
 
-#target_compile_options(DCT_LINALG PRIVATE "-march=native" "-O3")
+target_compile_options(DCT_LINALG PRIVATE "-march=native" "-O3")
