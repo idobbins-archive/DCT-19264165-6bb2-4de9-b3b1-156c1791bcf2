@@ -4,6 +4,8 @@
 
 #include <stddef.h>
 
+extern const float DCT_PI;
+
 typedef struct dct_source_t dct_source_t;
 typedef struct dct_compute_t dct_compute_t;
 typedef struct dct_matrix_t dct_matrix_t;

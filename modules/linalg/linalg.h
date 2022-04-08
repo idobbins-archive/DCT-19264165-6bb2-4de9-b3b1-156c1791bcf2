@@ -5,7 +5,6 @@
 
 #include <stddef.h>
 
-const float DCT_PI = 3.14159265f;
 
 typedef struct dct_matrix_t dct_matrix_t;
 

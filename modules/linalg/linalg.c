@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+const float DCT_PI = 3.14159265359f;
 
 void dct_print_matrix(dct_matrix_t a) {
   printf("Matrix: %zu X %zu\n", a.width, a.height);
