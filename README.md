@@ -13,7 +13,7 @@ Invocations should follow the form:
 
 `./dct -c {path to infile} -d {degree} -p {p-value}`
 
-The cli arguments are defined  below:
+The cli arguments are defined  below, all are reqired:
 
     CLI Arguments:
 
@@ -27,7 +27,16 @@ The cli arguments are defined  below:
 	p-value (-p)
  		Desired p-value used to initialize the quantization matrix.
 
-There is also some basic logging to show the progress of the compression.
+Basic logging is provided to show the progress of the compression. For now,
+every invocation outputs the reconstructed image as 'out.png' in the same directory
+the executable was called from.
+
+DCT was not built with optimization in mind. I am aware of places where memory
+is allocated more often than I would prefer. I also have not done much in the 
+way of cache-friendliness.
+
+The linear algebra operations I have written were all I needed to get this working
+so I didn't feel the need to import a more fully-fledged library for them.
 
 ---
 
