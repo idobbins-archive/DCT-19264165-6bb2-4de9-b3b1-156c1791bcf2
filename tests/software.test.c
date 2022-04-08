@@ -26,6 +26,22 @@ void compute_dct(dct_matrix_t *result) {
   }
 }
 
+void compute_q(dct_matrix_t *result, float p){
+  for (int i = 0; i < DCT_DEGREE; ++i) {
+	for (int j = 0; j < DCT_DEGREE; ++j) {
+	  result->data[i][j] = 8 * p * ((float)i + (float)j + 1);
+	}
+  }
+}
+
+void compute_q_1(dct_matrix_t *result, float p){
+  for (int i = 0; i < DCT_DEGREE; ++i) {
+	for (int j = 0; j < DCT_DEGREE; ++j) {
+	  result->data[i][j] = 1.0f / (8 * p * ((float)i + (float)j + 1));
+	}
+  }
+}
+
 int main(int argc, char **argv) {
 
   if (argc != 3) {
@@ -44,6 +60,12 @@ int main(int argc, char **argv) {
   dct_init_matrix(&dct_t, DCT_DEGREE, DCT_DEGREE);
   dct_matrix_transpose(&dct_t, dct);
 
+  const float p = 1.0f;
+
+  dct_matrix_t q;
+  dct_init_matrix(&q, DCT_DEGREE, DCT_DEGREE);
+  compute_q(&q, p);
+
   dct_matrix_t rx;
   dct_init_matrix(&rx, DCT_DEGREE, DCT_DEGREE);
 
@@ -52,6 +74,9 @@ int main(int argc, char **argv) {
 
   dct_matrix_t rx_r2;
   dct_init_matrix(&rx_r2, DCT_DEGREE, DCT_DEGREE);
+
+  dct_matrix_t rx_q;
+  dct_init_matrix(&rx_q, DCT_DEGREE, DCT_DEGREE);
 
   dct_matrix_t gx;
   dct_init_matrix(&gx, DCT_DEGREE, DCT_DEGREE);
@@ -62,6 +87,9 @@ int main(int argc, char **argv) {
   dct_matrix_t gx_r2;
   dct_init_matrix(&gx_r2, DCT_DEGREE, DCT_DEGREE);
 
+  dct_matrix_t gx_q;
+  dct_init_matrix(&gx_q, DCT_DEGREE, DCT_DEGREE);
+
   dct_matrix_t bx;
   dct_init_matrix(&bx, DCT_DEGREE, DCT_DEGREE);
 
@@ -71,6 +99,9 @@ int main(int argc, char **argv) {
   dct_matrix_t bx_r2;
   dct_init_matrix(&bx_r2, DCT_DEGREE, DCT_DEGREE);
 
+  dct_matrix_t bx_q;
+  dct_init_matrix(&bx_q, DCT_DEGREE, DCT_DEGREE);
+
   dct_matrix_t ax;
   dct_init_matrix(&ax, DCT_DEGREE, DCT_DEGREE);
 
@@ -79,6 +110,9 @@ int main(int argc, char **argv) {
 
   dct_matrix_t ax_r2;
   dct_init_matrix(&ax_r2, DCT_DEGREE, DCT_DEGREE);
+
+  dct_matrix_t ax_q;
+  dct_init_matrix(&ax_q, DCT_DEGREE, DCT_DEGREE);
 
   int chunk_count = (png.width * png.height) / (DCT_DEGREE * DCT_DEGREE);
   for (int k = 0; k < chunk_count; ++k) {
@@ -101,8 +135,8 @@ int main(int argc, char **argv) {
 
 	for (int i = 0; i < DCT_DEGREE; ++i) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
-		rx_r2.data[i][j] = (float)roundf(rx_r2.data[i][j]);
-		if (i + j >= DCT_DEGREE - 1) rx_r2.data[i][j] = 0;
+		float v = rx_r2.data[i][j] / q.data[i][j];
+		rx_q.data[i][j] = (float)roundf(v);
 	  }
 	}
 
@@ -114,7 +148,8 @@ int main(int argc, char **argv) {
 
 	for (int i = 0; i < DCT_DEGREE; ++i) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
-		if (i + j >= DCT_DEGREE - 1) gx_r2.data[i][j] = 0;
+		float v = gx_r2.data[i][j] / q.data[i][j];
+		gx_q.data[i][j] = (float)roundf(v);
 	  }
 	}
 
@@ -126,7 +161,8 @@ int main(int argc, char **argv) {
 
 	for (int i = 0; i < DCT_DEGREE; ++i) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
-		if (i + j >= DCT_DEGREE - 1) bx_r2.data[i][j] = 0;
+		float v = bx_r2.data[i][j] / q.data[i][j];
+		bx_q.data[i][j] = (float)roundf(v);
 	  }
 	}
 
@@ -138,7 +174,8 @@ int main(int argc, char **argv) {
 
 	for (int i = 0; i < DCT_DEGREE; ++i) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
-		if (i + j >= DCT_DEGREE - 1) ax_r2.data[i][j] = 0;
+		float v = ax_r2.data[i][j] / q.data[i][j];
+		ax_q.data[i][j] = (float)roundf(v);
 	  }
 	}
 
@@ -162,21 +199,27 @@ int main(int argc, char **argv) {
   dct_free_matrix(rx);
   dct_free_matrix(rx_r1);
   dct_free_matrix(rx_r2);
-
+  dct_free_matrix(rx_q);
 
   dct_free_matrix(gx);
   dct_free_matrix(gx_r1);
   dct_free_matrix(gx_r2);
+  dct_free_matrix(gx_q);
 
   dct_free_matrix(bx);
   dct_free_matrix(bx_r1);
   dct_free_matrix(bx_r2);
+  dct_free_matrix(bx_q);
 
   dct_free_matrix(ax);
   dct_free_matrix(ax_r1);
   dct_free_matrix(ax_r2);
+  dct_free_matrix(ax_q);
 
   dct_free_matrix(dct);
+
+  dct_free_matrix(q);
+
   dct_free_png(png);
 
   return 0;
