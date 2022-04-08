@@ -34,14 +34,6 @@ void compute_q(dct_matrix_t *result, float p){
   }
 }
 
-void compute_q_1(dct_matrix_t *result, float p){
-  for (int i = 0; i < DCT_DEGREE; ++i) {
-	for (int j = 0; j < DCT_DEGREE; ++j) {
-	  result->data[i][j] = 1.0f / (8 * p * ((float)i + (float)j + 1));
-	}
-  }
-}
-
 int main(int argc, char **argv) {
 
   if (argc != 3) {
@@ -60,7 +52,7 @@ int main(int argc, char **argv) {
   dct_init_matrix(&dct_t, DCT_DEGREE, DCT_DEGREE);
   dct_matrix_transpose(&dct_t, dct);
 
-  const float p = 1.0f;
+  const float p = 0.04f;
 
   dct_matrix_t q;
   dct_init_matrix(&q, DCT_DEGREE, DCT_DEGREE);
@@ -137,10 +129,11 @@ int main(int argc, char **argv) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
 		float v = rx_r2.data[i][j] / q.data[i][j];
 		rx_q.data[i][j] = (float)roundf(v);
+		rx_q.data[i][j] = rx_q.data[i][j] * q.data[i][j];
 	  }
 	}
 
-	dct_matrix_mul(&rx_r1, dct_t, rx_r2);
+	dct_matrix_mul(&rx_r1, dct_t, rx_q);
 	dct_matrix_mul(&rx, rx_r1, dct);
 
 	dct_matrix_mul(&gx_r1, dct, gx);
@@ -150,10 +143,11 @@ int main(int argc, char **argv) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
 		float v = gx_r2.data[i][j] / q.data[i][j];
 		gx_q.data[i][j] = (float)roundf(v);
+		gx_q.data[i][j] = gx_q.data[i][j] * q.data[i][j];
 	  }
 	}
 
-	dct_matrix_mul(&gx_r1, dct_t, gx_r2);
+	dct_matrix_mul(&gx_r1, dct_t, gx_q);
 	dct_matrix_mul(&gx, gx_r1, dct);
 
 	dct_matrix_mul(&bx_r1, dct, bx);
@@ -163,10 +157,11 @@ int main(int argc, char **argv) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
 		float v = bx_r2.data[i][j] / q.data[i][j];
 		bx_q.data[i][j] = (float)roundf(v);
+		bx_q.data[i][j] = bx_q.data[i][j] * q.data[i][j];
 	  }
 	}
 
-	dct_matrix_mul(&bx_r1, dct_t, bx_r2);
+	dct_matrix_mul(&bx_r1, dct_t, bx_q);
 	dct_matrix_mul(&bx, bx_r1, dct);
 
 	dct_matrix_mul(&ax_r1, dct, ax);
@@ -176,10 +171,11 @@ int main(int argc, char **argv) {
 	  for (int j = 0; j < DCT_DEGREE; ++j) {
 		float v = ax_r2.data[i][j] / q.data[i][j];
 		ax_q.data[i][j] = (float)roundf(v);
+		ax_q.data[i][j] = ax_q.data[i][j] * q.data[i][j];
 	  }
 	}
 
-	dct_matrix_mul(&ax_r1, dct_t, ax_r2);
+	dct_matrix_mul(&ax_r1, dct_t, ax_q);
 	dct_matrix_mul(&ax, ax_r1, dct);
 
 	for(int i = 0; i < DCT_DEGREE; i++) {
