@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 const float DCT_PI = 3.14159265359f;
 
@@ -38,6 +39,14 @@ void dct_free_matrix(dct_matrix_t a) {
   free(a.data);
 }
 
+void dct_copy_matrix(dct_matrix_t *result, dct_matrix_t a){
+  for (int i = 0; i < a.height; ++i) {
+	for (int j = 0; j < a.width; ++j) {
+	  result->data[i][j] = a.data[i][j];
+	}
+  }
+}
+
 void dct_matrix_transpose(dct_matrix_t *result, dct_matrix_t a) {
   for (int i = 0; i < a.width; ++i) {
 	for (int j = 0; j < a.height; ++j) {
@@ -60,6 +69,10 @@ void dct_matrix_mul(dct_matrix_t *result, dct_matrix_t a, dct_matrix_t b) {
   // check for compatible matrix dimensions
   if (a.width != b.height) exit(1);
 
+  dct_matrix_t ac;
+  dct_init_matrix(&ac, a.width, a.height);
+  dct_copy_matrix(&ac, a);
+
   dct_matrix_t bt;
   dct_init_matrix(&bt, b.height, b.width);
 
@@ -67,11 +80,12 @@ void dct_matrix_mul(dct_matrix_t *result, dct_matrix_t a, dct_matrix_t b) {
 
   for (int i = 0; i < b.height; ++i) {
 	for (int j = 0; j < b.width; ++j) {
-	  float dot = dct_dot_product(a.data[i], bt.data[j], a.width);
+	  float dot = dct_dot_product(ac.data[i], bt.data[j], a.width);
 	  result->data[i][j] = dot;
 	}
   }
 
+  dct_free_matrix(ac);
   dct_free_matrix(bt);
 }
 

@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 	char option = argv[i][1];
 	switch (option) {
 	  case 'c':
-		dct_compress(argv[i + 1], 8, 1);
+		dct_compress(argv[i + 1], 8, 0.5f);
 		break;
 	  case 'x':
 		dct_expand(argv[i + 1]);

@@ -13,6 +13,8 @@ void dct_print_matrix(dct_matrix_t a);
 void dct_init_matrix(dct_matrix_t *a, size_t width, size_t height);
 void dct_free_matrix(dct_matrix_t a);
 
+void dct_copy_matrix(dct_matrix_t *result, dct_matrix_t a);
+
 void dct_matrix_transpose(dct_matrix_t *result, dct_matrix_t a);
 
 float dct_dot_product(const float *a, const float *b, size_t size);

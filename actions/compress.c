@@ -66,6 +66,14 @@ static void apply_dct_rgba(split_rgba_t s, dct_matrix_t dct, dct_matrix_t dct_t)
   }
 }
 
+static void reverse_dct_rgba(split_rgba_t s, dct_matrix_t dct, dct_matrix_t dct_t){
+  for (int i = 0; i < 4; ++i) {
+	dct_matrix_t a = s.rgba[i];
+	dct_matrix_mul(&a, dct_t, a);
+	dct_matrix_mul(&a, a, dct);
+  }
+}
+
 static void apply_q_rgba(split_rgba_t s, int d, dct_matrix_t q){
   for (int i = 0; i < d; ++i) {
 	for (int j = 0; j < d; ++j) {
@@ -74,13 +82,23 @@ static void apply_q_rgba(split_rgba_t s, int d, dct_matrix_t q){
 
 		float v = a.data[i][j] / q.data[i][j];
 		a.data[i][j] = (float)roundf(v);
+	  }
+	}
+  }
+}
+
+static void reverse_q_rgba(split_rgba_t s, int d, dct_matrix_t q){
+  for (int i = 0; i < d; ++i) {
+	for (int j = 0; j < d; ++j) {
+	  for (int k = 0; i < 4; ++i) {
+		dct_matrix_t a = s.rgba[k];
 		a.data[i][j] = a.data[i][j] * q.data[i][j];
 	  }
 	}
   }
 }
 
-void dct_compress(const char *path, int d, int p) {
+void dct_compress(const char *path, int d, float p) {
   printf("Compressing image: %s\n", path);
 
   dct_png_t png;
@@ -109,8 +127,12 @@ void dct_compress(const char *path, int d, int p) {
 	int y = k / (png.width / d);
 
 	split_chunk_rgba(split, x, y, png);
+
 	apply_dct_rgba(split, dct, dct_t);
 	apply_q_rgba(split, d, q);
+	reverse_q_rgba(split, d, q);
+	reverse_dct_rgba(split, dct, dct_t);
+
 	merge_chunk_rgba(split, x, y, png);
   }
 
