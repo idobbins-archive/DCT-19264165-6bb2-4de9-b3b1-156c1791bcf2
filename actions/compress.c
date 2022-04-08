@@ -99,7 +99,15 @@ static void reverse_q_rgba(split_rgba_t s, int d, dct_matrix_t q){
 }
 
 void dct_compress(const char *path, int d, float p) {
-  printf("Compressing image: %s\n", path);
+
+  // hide cursor
+  printf("\e[?25l");
+
+  printf("Discrete Cosine Transform (DCT) Image Compression\n\n");
+  printf("Settings:\n");
+  printf("\tImage: %s\n", path);
+  printf("\tDepth: %d\n", d);
+  printf("\tP-value: %.2f\n\n", p);
 
   dct_png_t png;
   dct_load_png(path, &png);
@@ -134,13 +142,28 @@ void dct_compress(const char *path, int d, float p) {
 	reverse_dct_rgba(split, dct, dct_t);
 
 	merge_chunk_rgba(split, x, y, png);
+
+	// update progress
+	float progress = ((float)k / ((float)chunk_count - 1)) * 100.0f;
+	printf("\rCompressing image: %2.0f%% <%d/%d>", progress, k, chunk_count);
+	fflush(stdout);
   }
 
+  printf(", done.\n");
+
+  const char* out_path = "./out.png";
+  printf("Writing image to %s...", out_path);
+  fflush(stdout);
+
   dct_write_png("./out.png", &png);
+  printf(" done.\n");
 
   free_split_rgba(split);
   dct_free_matrix(q);
   dct_free_matrix(dct);
   dct_free_matrix(dct_t);
   dct_free_png(png);
+
+  // show cursor
+  printf("\e[?25h");
 }

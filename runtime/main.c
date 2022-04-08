@@ -19,20 +19,12 @@ int main(int argc, char **argv) {
 	exit(1);
   }
 
-  for (int i = 1; i < argc; i += 2) {
-	char option = argv[i][1];
-	switch (option) {
-	  case 'c':
-		dct_compress(argv[i + 1], 8, 0.5f);
-		break;
-	  case 'x':
-		dct_expand(argv[i + 1]);
-		break;
-	  default:
-		printf("invalid argument given '-%c'. exiting now...", option);
-		exit(1);
-	}
-  }
+  // argument structure is purposefully rigid
+  const char* file = argv[2];
+  int d = atoi(argv[4]);
+  float p = atof(argv[6]);
+
+  dct_compress(file, d, p);
 
   return 0;
 }
