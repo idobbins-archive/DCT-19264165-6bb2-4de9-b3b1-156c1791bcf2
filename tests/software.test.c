@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   dct_init_matrix(&dct_t, DCT_DEGREE, DCT_DEGREE);
   dct_matrix_transpose(&dct_t, dct);
 
-  const float p = 0.04f;
+  const float p = 0.001f;
 
   dct_matrix_t q;
   dct_init_matrix(&q, DCT_DEGREE, DCT_DEGREE);
