@@ -4,6 +4,7 @@ project(DCT C)
 
 add_subdirectory(modules/compute)
 add_subdirectory(modules/io)
+add_subdirectory(modules/linalg)
 
 
 add_executable(DCT runtime/main.c)

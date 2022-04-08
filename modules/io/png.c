@@ -62,3 +62,33 @@ void dct_free_png(dct_png_t image) {
 
   free(image.row_pointers);
 }
+
+void dct_write_png(const char*path, dct_png_t *image){
+  FILE *f = fopen(path, "wb");
+
+  png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
+  png_infop info = png_create_info_struct(png);
+
+  png_init_io(png, f);
+
+  // Output is 8bit depth, RGBA format.
+  png_set_IHDR(
+	  png,
+	  info,
+	  image->width, image->height,
+	  8,
+	  PNG_COLOR_TYPE_RGBA,
+	  PNG_INTERLACE_NONE,
+	  PNG_COMPRESSION_TYPE_DEFAULT,
+	  PNG_FILTER_TYPE_DEFAULT
+  );
+  png_write_info(png, info);
+
+  png_write_image(png, (png_bytepp)image->row_pointers);
+  png_write_end(png, NULL);
+
+  fclose(f);
+
+  png_destroy_write_struct(&png, &info);
+}

@@ -6,6 +6,7 @@
 
 typedef struct dct_source_t dct_source_t;
 typedef struct dct_compute_t dct_compute_t;
+typedef struct dct_matrix_t dct_matrix_t;
 
 struct dct_source_t {
   size_t size;
@@ -28,6 +29,12 @@ struct dct_compute_t {
   size_t buffer_item_size;
   size_t buffer_size;
   void** buffers;
+};
+
+struct dct_matrix_t {
+  size_t width;
+  size_t height;
+  float **data;
 };
 
 #endif//DCT_INCLUDE_DCT_H_

@@ -12,7 +12,7 @@ target_sources(DCT_IO
 
 # libpng
 find_package(PNG REQUIRED)
-target_include_directories(DCT_IO PRIVATE ${PNG_INCLUDE_DIR})
+target_include_directories(DCT_IO PUBLIC ${PNG_INCLUDE_DIR})
 target_link_libraries(DCT_IO PRIVATE  ${PNG_LIBRARY})
 
 #target_compile_options(DCT_IO PRIVATE "-march=native")

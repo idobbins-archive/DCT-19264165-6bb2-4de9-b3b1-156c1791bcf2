@@ -12,4 +12,6 @@ typedef struct dct_png_t dct_png_t;
 void dct_load_png(const char *path, dct_png_t *image);
 void dct_free_png(dct_png_t image);
 
+void dct_write_png(const char*path, dct_png_t *image);
+
 #endif//DCT_MODULES_IO_IO_H_
