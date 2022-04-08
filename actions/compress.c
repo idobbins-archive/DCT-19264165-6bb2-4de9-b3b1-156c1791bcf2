@@ -155,7 +155,7 @@ void dct_compress(const char *path, int d, float p) {
 	// need to operate on rgba channels individually.
 	split_chunk_rgba(split, x, y, png);
 
-	// immediate reversal of computation is sufficent for now.
+	// immediate reversal of computation is sufficient for now.
 	apply_dct_rgba(split, dct, dct_t);
 	apply_q_rgba(split, d, q);
 	reverse_q_rgba(split, d, q);
