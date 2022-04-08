@@ -1,4 +1,6 @@
 
+// Compute API to enable hardware-accelerated calculations.
+
 #ifndef DCT_MODULES_COMPUTE_COMPUTE_H_
 #define DCT_MODULES_COMPUTE_COMPUTE_H_
 

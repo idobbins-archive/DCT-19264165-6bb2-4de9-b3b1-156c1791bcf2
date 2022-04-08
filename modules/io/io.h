@@ -1,4 +1,6 @@
 
+// generic text/byte file and image loading
+
 #ifndef DCT_MODULES_IO_IO_H_
 #define DCT_MODULES_IO_IO_H_
 

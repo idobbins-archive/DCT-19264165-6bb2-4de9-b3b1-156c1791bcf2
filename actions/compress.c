@@ -1,4 +1,16 @@
 
+/*
+
+Image compression function
+
+Contains the core method called from the runtime. Also has helper functions
+to reduce the complexity of the implementation.
+
+Does not currently export any compressed image. It performs the DCT and Quantization
+and immediately reverses the procedure, outputting a reconstructed image.
+
+*/
+
 #include "actions.h"
 
 #include "dct.h"
@@ -129,18 +141,27 @@ void dct_compress(const char *path, int d, float p) {
 
   const int chunk_count = (png.width * png.height) / (d * d);
 
-  // iterate image chunks
+  /*
+
+  'chunks' are iterated in serial fashion, this
+   is where it would be good to focus on concurrent
+   implementations in the future.
+
+  */
   for (int k = 0; k < chunk_count; ++k) {
 	int x = k % (png.width / d);
 	int y = k / (png.width / d);
 
+	// need to operate on rgba channels individually.
 	split_chunk_rgba(split, x, y, png);
 
+	// immediate reversal of computation is sufficent for now.
 	apply_dct_rgba(split, dct, dct_t);
 	apply_q_rgba(split, d, q);
 	reverse_q_rgba(split, d, q);
 	reverse_dct_rgba(split, dct, dct_t);
 
+	// can't have an image without its parts (rgba).
 	merge_chunk_rgba(split, x, y, png);
 
 	// update progress

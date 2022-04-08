@@ -1,4 +1,6 @@
 
+// Include header for definition of types and constants used throughout
+
 #ifndef DCT_INCLUDE_DCT_H_
 #define DCT_INCLUDE_DCT_H_
 

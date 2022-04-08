@@ -1,10 +1,10 @@
 
+// Linear algebra utility functions and operations.
+
 #ifndef DCT_MODULES_LINALG_LINALG_H_
 #define DCT_MODULES_LINALG_LINALG_H_
 
-
 #include <stddef.h>
-
 
 typedef struct dct_matrix_t dct_matrix_t;
 

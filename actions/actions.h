@@ -1,4 +1,6 @@
 
+// routines that enable the desired functionality of the library
+
 #ifndef DCT_MODULES_ACTIONS_ACTIONS_H_
 #define DCT_MODULES_ACTIONS_ACTIONS_H_
 
